@@ -1,28 +1,33 @@
 import logo from './logo.svg';
 import MostrarCanchas from "./componentes/canchas.js"
 import './App.css';
+import { useState } from 'react';
+
 
 function App() {
 
-  const listado_canchas=[{nombre:'cancha-01',precio:10,descripcion:'futbol'},
-                         {nombre:'cancha-02',precio:10,descripcion:'futbol'},
-                         {nombre:'cancha-03',precio:15,descripcion:'basket'},
-                         {nombre:'cancha-04',precio:20,descripcion:'tenis'},
-                         {nombre:'cancha-05',precio:10,descripcion:'futbol'},
-                         {nombre:'cancha-06',precio:10,descripcion:'futbol'},
-                         {nombre:'cancha-07',precio:15,descripcion:'basket'},
-                         {nombre:'cancha-08',precio:20,descripcion:'tenis'},
-                         {nombre:'cancha-09',precio:10,descripcion:'futbol'},
-                         {nombre:'cancha-10',precio:10,descripcion:'futbol'},
-                         {nombre:'cancha-11',precio:15,descripcion:'basket'},
-                         {nombre:'cancha-12',precio:20,descripcion:'tenis'}
-                         ];
+  const click_cancha = (e)=>{
+    console.log(e.target)
+    console.log(e.target.name);
+  }
+
+
+  const[listacanchas,setListacanchas] = useState([
+                         {nombre:'cancha-01',precio:10,descripcion:'futbol',disponible:true},
+                         {nombre:'cancha-02',precio:10,descripcion:'futbol',disponible:true},
+                         {nombre:'cancha-03',precio:15,descripcion:'futbol',disponible:false},
+                         {nombre:'cancha-04',precio:20,descripcion:'futbol',disponible:true},
+                         {nombre:'cancha-05',precio:10,descripcion:'futbol',disponible:false},
+                         {nombre:'cancha-06',precio:10,descripcion:'futbol',disponible:true},
+                         {nombre:'cancha-07',precio:15,descripcion:'futbol',disponible:true},
+                         {nombre:'cancha-08',precio:20,descripcion:'futbol',disponible:false}
+                         ]) ;
 
 
   return (
     <div className="App">
 
-      <MostrarCanchas canchas={listado_canchas}></MostrarCanchas>
+      <MostrarCanchas canchas={listacanchas} clickcancha={click_cancha}></MostrarCanchas>
     
     </div>
   );
