@@ -10,14 +10,15 @@ function MostrarCanchas ({canchas, clickcancha}){
                     canchas.map((cancha)=>{
                         
                     return <div className={ ` ' bg-stone-100 text-center px-4 py-4 grid grid-cols-1-rows-3 gap-1 
-                                                shadow-md rounded border-solid border-2 
+                                                shadow-md rounded border-solid border-2
                                                
                                            ${cancha.disponible ? ' border-green-600 rounded-lg':' border-red-600 rounded-lg'} ' `}
                                 style={{maxHeight:'450px'}}>
                         
                                     <div className='py-1.5'  > 
                                         <img className='object-cover bg-sky-500 hover:bg-sky-700 transition-opacity duration-300 hover:opacity-40' 
-                                             name={cancha.nombre} onClick={clickcancha}  
+                                             name={cancha.nombre} onClick= {clickcancha}
+
                                              src={require(`../images/${cancha.descripcion}.jpg`)} />
                                     </div>
 

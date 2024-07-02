@@ -1,5 +1,6 @@
 import logo from './logo.svg';
-import MostrarCanchas from "./componentes/canchas.js"
+import MostrarCanchas from './componentes/canchas.js';
+import Slide_Over from './componentes/slideover.js';
 import './App.css';
 import { useState } from 'react';
 
@@ -7,10 +8,22 @@ import { useState } from 'react';
 function App() {
 
   const click_cancha = (e)=>{
-    console.log(e.target)
-    console.log(e.target.name);
+    if(slideover!=true){
+      console.log(e.target)
+      console.log(e.target.name);
+      setSlideover(true);
+      get_horarios(e.target.name);
+      cancha_slideover(e.target.name);
+      
+      
+    }
+    
   }
 
+  const[slideover,setSlideover]=useState(false);
+
+  const[canchaslideover, setCanchaSlideOver]= useState({nombre:'',precio:'',descripcion:''});
+  const[horariosslideover,setHorariosSlideOver]= useState([null]);
 
   const[listacanchas,setListacanchas] = useState([
                          {nombre:'cancha-01',precio:10,descripcion:'futbol',disponible:true},
@@ -24,10 +37,44 @@ function App() {
                          ]) ;
 
 
+  const get_horarios = (cancha_nombre) =>{
+
+    //Funcion que hace el fecth para pedir los horarios
+
+    const responseHorarios=[{horario_inicio:'10:00',horario_fin:'11:00',disponible:true},
+                            {horario_inicio:'11:00',horario_fin:'12:00',disponible:true},
+                            {horario_inicio:'12:00',horario_fin:'13:00',disponible:false},
+                            {horario_inicio:'13:00',horario_fin:'14:00',disponible:true},
+                            {horario_inicio:'14:00',horario_fin:'15:00',disponible:false},
+                            {horario_inicio:'15:00',horario_fin:'15:00',disponible:true}
+
+    ]
+    setHorariosSlideOver(responseHorarios);
+
+  }
+
+
+  const cancha_slideover = (cancha_nombre) =>{
+
+    listacanchas.map((cancha)=>{
+      
+      if (cancha_nombre == cancha.nombre)
+      {
+        setCanchaSlideOver(cancha);
+      }
+
+    });
+
+  }
+
+
+
+
   return (
-    <div className="App">
+    <div className='App flex'>
 
       <MostrarCanchas canchas={listacanchas} clickcancha={click_cancha}></MostrarCanchas>
+      {slideover ? <Slide_Over showslide={slideover} cancha={canchaslideover} horarios={horariosslideover} />:''}
     
     </div>
   );
