@@ -1,12 +1,19 @@
 import React from "react";
 
 
-function MostrarCanchas ({canchas, clickcancha}){
+function MostrarCanchas ({canchas, clickcancha,slideover}){
    
     console.log(canchas);
     return(
+            <div className='relative'>
+
+                {slideover ? <div className='absolute inset-0 bg-black opacity-50'>     
+                             </div>:''}
+            
             <div className='grid grid-cols-4 gap-4 py-5 px-20 overflow-y-scroll' 
-                 style={{maxHeight:'800px'}} >{
+                 style={{maxHeight:'800px'}} >
+                    
+                    {
                     canchas.map((cancha)=>{
                         
                     return <div className={ ` ' bg-stone-100 text-center px-4 py-4 grid grid-cols-1-rows-3 gap-1 
@@ -16,7 +23,7 @@ function MostrarCanchas ({canchas, clickcancha}){
                                 style={{maxHeight:'450px'}}>
                         
                                     <div className='py-1.5'  > 
-                                        <img className='object-cover bg-sky-500 hover:bg-sky-700 transition-opacity duration-300 hover:opacity-40' 
+                                        <img className='object-cover bg-sky-500 hover:bg-sky-700 transition-opacity duration-400 hover:opacity-40' 
                                              name={cancha.nombre} onClick= {clickcancha}
 
                                              src={require(`../images/${cancha.descripcion}.jpg`)} />
@@ -32,6 +39,7 @@ function MostrarCanchas ({canchas, clickcancha}){
                             </div>
                            })
                         }             
+            </div>
             </div>
 
         )
