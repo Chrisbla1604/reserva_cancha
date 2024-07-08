@@ -26,7 +26,11 @@ function Slide_Over ({showslide,cancha,horarios,clickboton} ){
                 {
                     horarios.map ((horario)=>{
                         return(
-                            <div className='bg-white border'>{horario.horario_inicio} - {horario.horario_fin}</div>
+                            <div className={`' border ${horario.disponible ? 'bg-white':'bg-red-200'} '`}>
+                                <input type='checkbox' id={horario.horario_id} name={horario.horario_id} 
+                                       className={`${horario.disponible ? '':'pointer-events-none'} mr-2`} />
+                                <label htmlfor={horario.horario_id}>{horario.horario_inicio} - {horario.horario_fin}</label>  
+                            </div>
                         )
                     }) 
                 }

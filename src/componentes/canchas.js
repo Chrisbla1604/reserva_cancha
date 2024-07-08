@@ -24,7 +24,7 @@ function MostrarCanchas ({canchas, clickcancha,slideover}){
                         
                                     <div className='py-1.5'  > 
                                         <img className='object-cover bg-sky-500 hover:bg-sky-700 transition-opacity duration-400 hover:opacity-40' 
-                                             name={cancha.nombre} onClick= {clickcancha}
+                                             name={cancha.nombre} id={cancha.id_cancha} onClick= {clickcancha}
 
                                              src={require(`../images/${cancha.descripcion}.jpg`)} />
                                     </div>

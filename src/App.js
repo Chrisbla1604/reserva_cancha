@@ -2,18 +2,20 @@ import logo from './logo.svg';
 import MostrarCanchas from './componentes/canchas.js';
 import Slide_Over from './componentes/slideover.js';
 import './App.css';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 
 function App() {
+  
+  
+  //const [get,setGet]=useState(true);
 
- 
   const[slideover,setSlideover]=useState(false);
 
   const[canchaslideover, setCanchaSlideOver]= useState({nombre:'',precio:'',descripcion:''});
-  const[horariosslideover,setHorariosSlideOver]= useState([null]);
+  const[horariosslideover,setHorariosSlideOver]= useState([]);
 
-  const[listacanchas,setListacanchas] = useState([
+  /*const[listacanchas,setListacanchas] = useState([
                          {nombre:'cancha-01',precio:10,descripcion:'futbol',disponible:true},
                          {nombre:'cancha-02',precio:10,descripcion:'futbol',disponible:true},
                          {nombre:'cancha-03',precio:15,descripcion:'futbol',disponible:false},
@@ -24,38 +26,90 @@ function App() {
                          {nombre:'cancha-08',precio:20,descripcion:'futbol',disponible:false},
                          {nombre:'cancha-09',precio:15,descripcion:'futbol',disponible:false},
                          {nombre:'cancha-10',precio:20,descripcion:'futbol',disponible:false}
-                         ]) ;
+                         ]) ;*/
 
+  const[listacanchas,setListacanchas] = useState([]);
+                         
+  useEffect(() => {
 
-  const get_horarios = (cancha_nombre) =>{
+    fetch("http://localhost:8000/canchas",{
+      method: "GET",
+    //body: JSON.stringify(datosOrdenUsuario),
+      credentials: "omit",
+      mode: "no-cors",
+      headers: {  'Content-type':'application/json;charset=utf-8',
+                  'Accept': 'application/json',
+                  'Access-Control-Allow-Origin': '*'
+      }
+  }).then((res) =>res.json())
+    .catch((error) => console.error("Error:", error))
+    .then((resp) =>{ console.log('Obteniendo Canchas: ',resp)
+                     setListacanchas(resp);
+    });
+  }, []);
+   
+    //setGet(false);
+    
+
+  const get_horarios = (cancha_id) =>{
 
     //Funcion que hace el fecth para pedir los horarios
+  /* const id_cancha =1;
 
-    const responseHorarios=[{horario_inicio:'10:00',horario_fin:'11:00',disponible:true},
-                            {horario_inicio:'11:00',horario_fin:'12:00',disponible:true},
-                            {horario_inicio:'12:00',horario_fin:'13:00',disponible:false},
-                            {horario_inicio:'13:00',horario_fin:'14:00',disponible:true},
-                            {horario_inicio:'14:00',horario_fin:'15:00',disponible:false},
-                            {horario_inicio:'15:00',horario_fin:'16:00',disponible:true},
-                            {horario_inicio:'16:00',horario_fin:'17:00',disponible:true},
-                            {horario_inicio:'17:00',horario_fin:'18:00',disponible:true},
-                            {horario_inicio:'18:00',horario_fin:'19:00',disponible:true},
-                            {horario_inicio:'19:00',horario_fin:'20:00',disponible:true}
+    listacanchas.map((cancha)=>{
+      
+      if (cancha_nombre == cancha.nombre)
+       {
+          id_cancha = cancha.id_cancha;
+          console.log(cancha.id_cancha);
+
+       }
+ 
+     });*/
+    
+      fetch(`http://localhost:8000/getInfoCanchaById/${cancha_id}`,{
+        method: "GET",
+        credentials: "omit",
+        mode: "no-cors",
+        headers: {  'Content-type':'application/json;charset=utf-8',
+                    'Accept': 'application/json',
+                    'Access-Control-Allow-Origin': '*'
+        }
+    }).then((res) =>res.json())
+      .catch((error) => console.error("Error:", error))
+      .then((resp) =>{ console.log('Obteniendo Horarios: ',resp)
+                       setHorariosSlideOver(resp);
+                       setSlideover(true);
+                       console.log(horariosslideover);
+      });
+    
+
+    /*const responseHorarios=[{horario_inicio:'10:00',horario_fin:'11:00',disponible:true,horario_id:1},
+                            {horario_inicio:'11:00',horario_fin:'12:00',disponible:true,horario_id:2},
+                            {horario_inicio:'12:00',horario_fin:'13:00',disponible:false,horario_id:3},
+                            {horario_inicio:'13:00',horario_fin:'14:00',disponible:true,horario_id:4},
+                            {horario_inicio:'14:00',horario_fin:'15:00',disponible:false,horario_id:5},
+                            {horario_inicio:'15:00',horario_fin:'16:00',disponible:true,horario_id:6},
+                            {horario_inicio:'16:00',horario_fin:'17:00',disponible:false,horario_id:7},
+                            {horario_inicio:'17:00',horario_fin:'18:00',disponible:false,horario_id:8},
+                            {horario_inicio:'18:00',horario_fin:'19:00',disponible:true,horario_id:9},
+                            {horario_inicio:'19:00',horario_fin:'20:00',disponible:true,horario_id:10}
 
     ]
-    setHorariosSlideOver(responseHorarios);
-
+    setHorariosSlideOver(responseHorarios);*/
+    return
   }
 
   const click_cancha = (e)=>{
     if(slideover!=true){
-      console.log(e.target)
+      console.log(e.target);
       console.log(e.target.name);
-      setSlideover(true);
-      get_horarios(e.target.name);
+      console.log(e.target.id);
+      get_horarios(e.target.id);
       cancha_slideover(e.target.name); 
+      //setSlideover(true);
     }
-    
+   return 
   }
 
   const cancha_slideover = (cancha_nombre) =>{
@@ -68,7 +122,7 @@ function App() {
       }
 
     });
-
+  return
   }
 
   const click_slideover_boton=(e)=>{
@@ -77,6 +131,7 @@ function App() {
     if(e.target.name=='Salir'){
       setSlideover(false);
     }
+  return
   }
 
 
