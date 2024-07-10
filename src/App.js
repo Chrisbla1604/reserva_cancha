@@ -6,15 +6,26 @@ import Reservas from './componentes/reservas.js';
 import './App.css';
 import { useState, useEffect } from 'react';
 import{BrowserRouter as Router, Routes, Route,Link,useRouteMatch,useParams} from 'react-router-dom';
+import { upload } from '@testing-library/user-event/dist/upload.js';
 
 
 function App() {
   
+  
+  const[inforeservas,setInfoReservas] = useState([
+    {id_reserva:1,cancha:'cancha-01',precio:10,hora_inicio:'10:30',hora_fin:'12:30',pagada:false},
+    {id_reserva:8,cancha:'cancha-02',precio:10,hora_inicio:'12:30',hora_fin:'13:30',pagada:false},
+    {id_reserva:13,cancha:'cancha-03',precio:15,hora_inicio:'14:30',hora_fin:'15:30',pagada:false},
+    {id_reserva:24,cancha:'cancha-04',precio:20,hora_inicio:'16:30',hora_fin:'17:30',pagada:false}
+   ]) ;  
 
+  const[hola,setHola]=useState('holaaaa');
   const[slideover,setSlideover]=useState(false);
 
   const[canchaslideover, setCanchaSlideOver]= useState({nombre:'',precio:'',descripcion:''});
   const[horariosslideover,setHorariosSlideOver]= useState([]);
+
+ 
 
   const[listacanchas,setListacanchas] = useState([
                          {nombre:'cancha-01',precio:10,descripcion:'futbol',disponible:true},
@@ -29,13 +40,7 @@ function App() {
                          {nombre:'cancha-10',precio:20,descripcion:'futbol',disponible:false}
                          ]) ;
 
-  const[listareservas,setListaresevas] = useState([
-    {cancha:'cancha-01',precio:10,hora_inicio:'10:30',hora_fin:'12:30',pagada:false},
-    {cancha:'cancha-02',precio:10,hora_inicio:'12:30',hora_fin:'13:30',pagada:false},
-    {cancha:'cancha-03',precio:15,hora_inicio:'14:30',hora_fin:'15:30',pagada:false},
-    {cancha:'cancha-04',precio:20,hora_inicio:'16:30',hora_fin:'17:30',pagada:false},
-   
-    ]) ;                     
+                     
 
   //const[listacanchas,setListacanchas] = useState([]);
                          
@@ -132,6 +137,31 @@ function App() {
   }
 
 
+  const update_pago_reserva = (e)=>{
+      let temp= [];
+
+      console.log('Pagada la reserva con id: ',e.target.id);
+      inforeservas.map((reserva)=>{
+          if(reserva.id_reserva==e.target.id)
+          {
+            console.log('Pago a modificar:' , reserva.id_reserva);
+            temp.push({...reserva,pagada:true});
+            console.log(temp);  
+          }
+          else{
+            if(reserva.pagada==true){
+              temp.push(reserva);
+            }
+            else{
+              temp.unshift(reserva)
+            }
+           ;
+          }
+          
+      });
+      setInfoReservas(temp);
+  }
+
   return (
 
     <Router>
@@ -145,7 +175,7 @@ function App() {
              {slideover ? <Slide_Over showslide={slideover} cancha={canchaslideover} horarios={horariosslideover} clickboton={click_slideover_boton} />:''}
              </div>} />
 
-            <Route path='/reservas' element={ <div><Reservas reservas={listareservas}>
+            <Route path='/reservas' element={ <div><Reservas reservas={inforeservas} clickpago={update_pago_reserva}>
               
               </Reservas>
               </div> } />
