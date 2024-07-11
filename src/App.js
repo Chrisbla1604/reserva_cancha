@@ -2,6 +2,7 @@ import logo from './logo.svg';
 import MostrarCanchas from './componentes/canchas.js';
 import Slide_Over from './componentes/slideover.js';
 import Reservas from './componentes/reservas.js';
+import HistorialPagos from './componentes/pagos.js';
 
 import './App.css';
 import { useState, useEffect } from 'react';
@@ -17,7 +18,15 @@ function App() {
     {id_reserva:8,cancha:'cancha-02',precio:10,hora_inicio:'12:30',hora_fin:'13:30',pagada:false},
     {id_reserva:13,cancha:'cancha-03',precio:15,hora_inicio:'14:30',hora_fin:'15:30',pagada:false},
     {id_reserva:24,cancha:'cancha-04',precio:20,hora_inicio:'16:30',hora_fin:'17:30',pagada:false}
-   ]) ;  
+   ]) ;
+   
+   const[listapagos,setListaPagos] = useState([
+    {cancha_nombre:'cancha-01',precio:10,cancha_hora_inicio:'10:30',cancha_hora_fin:'12:30',fecha:'11-07-2024'},
+    {cancha_nombre:'cancha-02',precio:10,cancha_hora_inicio:'12:30',cancha_hora_fin:'13:30',fecha:'12-07-2024'},
+    {cancha_nombre:'cancha-03',precio:15,cancha_hora_inicio:'14:30',cancha_hora_fin:'15:30',fecha:'11-07-2024'},
+    {cancha_nombre:'cancha-04',precio:20,cancha_hora_inicio:'16:30',cancha_hora_fin:'17:30',fecha:'10-07-2024'}
+   ]) ;
+   
 
   const[hola,setHola]=useState('holaaaa');
   const[slideover,setSlideover]=useState(false);
@@ -180,20 +189,20 @@ function App() {
               </Reservas>
               </div> } />
 
-            <Route path='/historial-pagos' element={ <div> Historial Pagos </div> } />
+            <Route path='/historial-pagos' element={ <div> <HistorialPagos pagos={listapagos}></HistorialPagos> </div> } />
          
          </Routes>
 
-         <nav>
-             <ul className='grid grid-cols-3'></ul>
-              <li>
-                <Link className='bg-gray-300' to='/'>Home</Link>
+         <nav className='flex place-content-center mt-5 mb-10 bg-black'> 
+             <ul></ul>
+              <li className='p-4 bg-orange-400'>
+                <Link className='' to='/'><strong>HOME</strong></Link>
               </li>
-              <li>
-                <Link className='bg-gray-300' to='/reservas'>Reservas</Link>
+              <li className='p-4 bg-blue-400'>
+                <Link className='' to='/reservas'><strong>RESERVAS</strong> </Link>
               </li>
-              <li>
-                <Link className='bg-gray-300' to='/historial-pagos'>Historial de Pago</Link>
+              <li className='p-4 bg-purple-400'>
+                <Link className='' to='/historial-pagos'><strong>HISTORIAL DE PAGOS</strong></Link>
               </li>
           </nav>
 
