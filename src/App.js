@@ -13,30 +13,34 @@ import { upload } from '@testing-library/user-event/dist/upload.js';
 function App() {
   
   
-  const[inforeservas,setInfoReservas] = useState([
-    {id_reserva:1,cancha:'cancha-01',precio:10,hora_inicio:'10:30',hora_fin:'12:30',pagada:false},
+ /* const[inforeservas,setInfoReservas] = useState([
+    {id_reserva:1,cancha:'cancha-01',precio:10,'10:30',hora_fin:'12:30',pagada:false},
     {id_reserva:8,cancha:'cancha-02',precio:10,hora_inicio:'12:30',hora_fin:'13:30',pagada:false},
     {id_reserva:13,cancha:'cancha-03',precio:15,hora_inicio:'14:30',hora_fin:'15:30',pagada:false},
     {id_reserva:24,cancha:'cancha-04',precio:20,hora_inicio:'16:30',hora_fin:'17:30',pagada:false}
-   ]) ;
+   ]) ;*/
    
-   const[listapagos,setListaPagos] = useState([
+   /*const[listapagos,setListaPagos] = useState([
     {cancha_nombre:'cancha-01',precio:10,cancha_hora_inicio:'10:30',cancha_hora_fin:'12:30',fecha:'11-07-2024'},
     {cancha_nombre:'cancha-02',precio:10,cancha_hora_inicio:'12:30',cancha_hora_fin:'13:30',fecha:'12-07-2024'},
     {cancha_nombre:'cancha-03',precio:15,cancha_hora_inicio:'14:30',cancha_hora_fin:'15:30',fecha:'11-07-2024'},
     {cancha_nombre:'cancha-04',precio:20,cancha_hora_inicio:'16:30',cancha_hora_fin:'17:30',fecha:'10-07-2024'}
-   ]) ;
+   ]) ;*/
    
 
-  const[hola,setHola]=useState('holaaaa');
   const[slideover,setSlideover]=useState(false);
 
   const[canchaslideover, setCanchaSlideOver]= useState({nombre:'',precio:'',descripcion:''});
   const[horariosslideover,setHorariosSlideOver]= useState([]);
+  const[listacanchas,setListacanchas] = useState([]);
+  const[inforeservas,setInfoReservas] = useState([]);
+  const[listapagos,setListaPagos] = useState([]);
+  const[idusuario,setIdUsuario]= useState(0);
+  const[recargar,setRecargar]= useState(false);
 
- 
 
-  const[listacanchas,setListacanchas] = useState([
+
+ /* const[listacanchas,setListacanchas] = useState([
                          {nombre:'cancha-01',precio:10,descripcion:'futbol',disponible:true},
                          {nombre:'cancha-02',precio:10,descripcion:'futbol',disponible:true},
                          {nombre:'cancha-03',precio:15,descripcion:'futbol',disponible:false},
@@ -48,18 +52,42 @@ function App() {
                          {nombre:'cancha-09',precio:15,descripcion:'futbol',disponible:false},
                          {nombre:'cancha-10',precio:20,descripcion:'futbol',disponible:false}
                          ]) ;
+*/
 
-                     
 
-  //const[listacanchas,setListacanchas] = useState([]);
+  useEffect(() => {
+    // fecth para pedir el Id de Usuario en base a la cookie
+    fetch("http://localhost:8000/sesion",{
+      method: "GET",
+      //credentials: "omit",
+      //mode: "no-cors",
+      headers: {  'Content-type':'application/json;charset=utf-8',
+                  'Accept': 'application/json',
+                  'Access-Control-Allow-Origin': '*'
+      }
+  }).then((res) =>res.json())
+    .catch((error) => console.error("Error:", error))
+    .then((resp) =>{  
+                      setIdUsuario(resp.usuario_id);
+                      console.log('User id en sesion: ',resp.usuario_id);
+                      console.log(recargar);
+                      let trigger = recargar;
+                      setRecargar(!trigger);
+                      console.log(recargar);
+                       
+    });
+  }, []);   
+
+
+
                          
   useEffect(() => {
+    // fecth para pedir el Listado de Canchas
 
     fetch("http://localhost:8000/canchas",{
       method: "GET",
-    //body: JSON.stringify(datosOrdenUsuario),
-      credentials: "omit",
-      mode: "no-cors",
+      //credentials: "omit",
+      //mode: "no-cors",
       headers: {  'Content-type':'application/json;charset=utf-8',
                   'Accept': 'application/json',
                   'Access-Control-Allow-Origin': '*'
@@ -67,21 +95,63 @@ function App() {
   }).then((res) =>res.json())
     .catch((error) => console.error("Error:", error))
     .then((resp) =>{ console.log('Obteniendo Canchas: ',resp)
-                     //setListacanchas(resp);
+                     setListacanchas(resp);
     });
-  }, []);
+  },[recargar]);
 
-    
+
+                
+  
+ 
+  useEffect(() =>{
+
+    // fecth para pedir las Reservas por Id de Usuario
+
+    fetch(`http://localhost:8000/getInfoReservaByUserId/${idusuario}`,{
+      method: "GET",
+      //credentials: "omit",
+      //mode: "no-cors",
+      headers: {  'Content-type':'application/json;charset=utf-8',
+                  'Accept': 'application/json',
+                  'Access-Control-Allow-Origin': '*'
+      }
+  }).then((res) =>res.json())
+    .catch((error) => console.error("Error:", error))
+    .then((resp) =>{ console.log('Obteniendo Reservas: ',resp)
+                    setInfoReservas(resp);
+  }); 
+  },[recargar]);
+
+  useEffect(() =>{
+
+    // fecth para pedir los Pagos por Id de Usuario
+
+    fetch(`http://localhost:8000/pagos/${idusuario}`,{
+      method: "GET",
+      //credentials: "omit",
+      //mode: "no-cors",
+      headers: {  'Content-type':'application/json;charset=utf-8',
+                  'Accept': 'application/json',
+                  'Access-Control-Allow-Origin': '*'
+      }
+  }).then((res) =>res.json())
+    .catch((error) => console.error("Error:", error))
+    .then((resp) =>{ console.log('Obteniendo Pagos: ',resp)
+                    setListaPagos(resp);
+  }); 
+  },[recargar]); 
+  
+
+
 
   const get_horarios = (cancha_id) =>{
 
-    //Funcion que hace el fecth para pedir los horarios
-
-    
+      //fecth para pedir los horarios por Id de Cancha
+ 
       fetch(`http://localhost:8000/getInfoCanchaById/${cancha_id}`,{
         method: "GET",
-        credentials: "omit",
-        mode: "no-cors",
+        //credentials: "omit",
+        //mode: "no-cors",
         headers: {  'Content-type':'application/json;charset=utf-8',
                     'Accept': 'application/json',
                     'Access-Control-Allow-Origin': '*'
@@ -89,12 +159,12 @@ function App() {
     }).then((res) =>res.json())
       .catch((error) => console.error("Error:", error))
       .then((resp) =>{ console.log('Obteniendo Horarios: ',resp)
-                       //setHorariosSlideOver(resp);
-                       //setSlideover(true);
-                       //console.log(horariosslideover);
+                       setHorariosSlideOver(resp);
+                       setSlideover(true);
+                       console.log(horariosslideover);
       });
     
-
+/*
     const responseHorarios=[{horario_inicio:'10:00',horario_fin:'11:00',disponible:true,horario_id:1},
                             {horario_inicio:'11:00',horario_fin:'12:00',disponible:true,horario_id:2},
                             {horario_inicio:'12:00',horario_fin:'13:00',disponible:false,horario_id:3},
@@ -107,7 +177,7 @@ function App() {
                             {horario_inicio:'19:00',horario_fin:'20:00',disponible:true,horario_id:10}
 
     ]
-    setHorariosSlideOver(responseHorarios);
+    setHorariosSlideOver(responseHorarios);*/
     return
   }
 
@@ -118,7 +188,7 @@ function App() {
       console.log(e.target.id);
       get_horarios(e.target.id);
       cancha_slideover(e.target.name); 
-      setSlideover(true);
+      //setSlideover(true);
     }
    return 
   }
@@ -171,6 +241,7 @@ function App() {
       setInfoReservas(temp);
   }
 
+
   return (
 
     <Router>
@@ -184,7 +255,7 @@ function App() {
              {slideover ? <Slide_Over showslide={slideover} cancha={canchaslideover} horarios={horariosslideover} clickboton={click_slideover_boton} />:''}
              </div>} />
 
-            <Route path='/reservas' element={ <div><Reservas reservas={inforeservas} clickpago={update_pago_reserva}>
+            <Route path='/reservas' element={<div><Reservas reservas={inforeservas} clickpago={update_pago_reserva}>
               
               </Reservas>
               </div> } />
@@ -195,13 +266,13 @@ function App() {
 
          <nav className='flex place-content-center mt-5 mb-10 bg-black'> 
              <ul></ul>
-              <li className='p-4 bg-orange-400'>
+              <li className='p-4 bg-orange-400' name='home'>
                 <Link className='' to='/'><strong>HOME</strong></Link>
               </li>
-              <li className='p-4 bg-blue-400'>
-                <Link className='' to='/reservas'><strong>RESERVAS</strong> </Link>
+              <li className='p-4 bg-blue-400' name='reserva'>
+                <Link className=''  to='/reservas'><strong>RESERVAS</strong> </Link>
               </li>
-              <li className='p-4 bg-purple-400'>
+              <li className='p-4 bg-purple-400' name='historial'>
                 <Link className='' to='/historial-pagos'><strong>HISTORIAL DE PAGOS</strong></Link>
               </li>
           </nav>

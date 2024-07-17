@@ -3,7 +3,7 @@ import React from "react";
 function Slide_Over ({showslide,cancha,horarios,clickboton} ){
 
     return(
-        <div className='p-5 bg-blue-600 place-content-center' style={{maxHeight:'800px'}}>
+        <div className='p-5 bg-blue-600 justify-items-center  place-content-center' style={{maxHeight:'800px'}}>
 
         <div className={ `' ${showslide ? 'visible':'hidden'} ' `}>
 
