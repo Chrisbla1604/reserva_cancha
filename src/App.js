@@ -8,7 +8,7 @@ import './App.css';
 import { useState, useEffect } from 'react';
 import{BrowserRouter as Router, Routes, Route,Link,useRouteMatch,useParams} from 'react-router-dom';
 import { upload } from '@testing-library/user-event/dist/upload.js';
-
+import jQuery from 'jquery';
 
 function App() {
   
@@ -219,13 +219,37 @@ function App() {
   const update_pago_reserva = (e)=>{
       let temp= [];
 
-      console.log('Pagada la reserva con id: ',e.target.id);
+      var csrftoken = getCookie('csrftoken');
+
+      const enviar_pago = (url) =>{
+        fetch(url, { method: 'POST',
+                     credentials: 'include',
+                     headers: {  'Content-type':'application/json;charset=utf-8',
+                                  'Accept': 'application/json',
+                                  'Access-Control-Allow-Origin': '*',
+                                  'X-CSRFToken': csrftoken
+                                },
+                     body: JSON.stringify({mensaje:"todo bien"}),
+        }
+        ).then(response => response.json())
+         .catch(err => console.log(err)) 
+         .then(json => { console.log('RESERVA PAGADA CON EXITO');
+                        //let trigger = !recargar;
+                        //setRecargar(trigger);
+                      }
+              );
+      return   
+      }
+
+      console.log('Pagar la reserva con id: ',e.target.id);
       inforeservas.map((reserva)=>{
           if(reserva.id_reserva==e.target.id)
           {
             console.log('Pago a modificar:' , reserva.id_reserva);
             temp.push({...reserva,pagada:true});
-            console.log(temp);  
+            console.log(temp);
+            enviar_pago(`http://localhost:8000/registrarpago/${reserva.id_reserva}`);
+
           }
           else{
             if(reserva.pagada==true){
@@ -239,41 +263,72 @@ function App() {
           
       });
       setInfoReservas(temp);
+  return
   }
+
+
+
+  const getCookie = (name) => {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+   }   
+
+
+
+  const recargar_data = (e) =>{
+    let trigger = recargar;
+    setRecargar(!trigger);
+    console.log('Se activa Trigger de UseEffect');
+    return
+  }
+
 
 
   return (
 
     <Router>
-        <div>
-           
+        <div className='grid grid-cols-1'> 
+          <div > 
+          BIENVENIDO</div> 
+          
+
 
         <Routes>
 
-            <Route exact path='/' element={ <div className='flex'>
+            <Route exact path='/home' element={ <div className='  flex bg-[url("./images/futbol-4.jpg")] '>
               <MostrarCanchas canchas={listacanchas} clickcancha={click_cancha} slideover={slideover}></MostrarCanchas>
              {slideover ? <Slide_Over showslide={slideover} cancha={canchaslideover} horarios={horariosslideover} clickboton={click_slideover_boton} />:''}
              </div>} />
 
-            <Route path='/reservas' element={<div><Reservas reservas={inforeservas} clickpago={update_pago_reserva}>
+            <Route path='/reservas' element={<div  className='bg-[url("./images/futbol-4.jpg")] '><Reservas reservas={inforeservas} clickpago={update_pago_reserva}>
               
               </Reservas>
               </div> } />
 
-            <Route path='/historial-pagos' element={ <div> <HistorialPagos pagos={listapagos}></HistorialPagos> </div> } />
+            <Route path='/historial-pagos' element={ <div  className='bg-[url("./images/futbol-4.jpg")] '> <HistorialPagos pagos={listapagos}></HistorialPagos> </div> } />
          
          </Routes>
 
-         <nav className='flex place-content-center mt-5 mb-10 bg-black'> 
-             <ul></ul>
+         <nav className='flex place-content-center p-2 bg-black'> 
+             <ul ></ul>
               <li className='p-4 bg-orange-400' name='home'>
-                <Link className='' to='/'><strong>HOME</strong></Link>
+                <Link className='' to='/home'><strong onClick={recargar_data}>HOME</strong></Link>
               </li>
               <li className='p-4 bg-blue-400' name='reserva'>
-                <Link className=''  to='/reservas'><strong>RESERVAS</strong> </Link>
+                <Link className=''  to='/reservas'><strong onClick={recargar_data}>RESERVAS</strong> </Link>
               </li>
               <li className='p-4 bg-purple-400' name='historial'>
-                <Link className='' to='/historial-pagos'><strong>HISTORIAL DE PAGOS</strong></Link>
+                <Link className='' to='/historial-pagos'><strong onClick={recargar_data}>HISTORIAL DE PAGOS</strong></Link>
               </li>
           </nav>
 
